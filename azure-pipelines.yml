@@ -20,8 +20,7 @@ steps:
       python -m build
     displayName: 'Build Package'
 
-  - task: 
-    displayName: 'TwineAuthenticate@1@1'
+  - task: 'TwineAuthenticate@1'
     inputs:
       artifactFeed: 'Test-feed'
 
