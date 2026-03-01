@@ -14,7 +14,7 @@ jobs:
       Python39:
         python.version: '3.9'
   steps:
-    # Install Python and pip
+    # Install Python and the coverage checker
     - task: UsePythonVersion@0
       inputs:
         versionSpec: '$(python.version)'
