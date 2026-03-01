@@ -8,10 +8,6 @@ strategy:
   matrix:
     Python310:
       python.version: '3.10'
-    Python311:
-      python.version: '3.11'
-    Python312:
-      python.version: '3.12'
 
 steps:
   - task: UsePythonVersion@0
@@ -20,26 +16,16 @@ steps:
     displayName: 'Use Python $(python.version)'
 
   - script: |
-      python -m pip install --upgrade pip
-      pip install -r requirements.txt
-    displayName: 'Install dependencies'
+      python -m pip install --upgrade pip --upgrade build
+      python -m build
+    displayName: 'Build Package'
 
-  - task: ArchiveFiles@2
-    displayName: 'Archive files'
+  - task: 
+    displayName: 'TwineAuthenticate@1@1'
     inputs:
-      rootFolderOrFile: $(System.DefaultWorkingDirectory)
-      includeRootFolder: false
-      archiveType: zip
-      archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-$(python.version).zip
-      replaceExistingArchive: true
-
-  - task: PublishBuildArtifacts@1
-    inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: 'drop'
-      publishLocation: 'Container'
+      artifactFeed: 'Test-feed'
 
   - script: |
-      pip install pytest pytest-azurepipelines
-      pytest
-    displayName: 'pytest'
+      pythin -m pip install twine
+      twine upload -r Test-feed --config-file $(PYPIRC_PATH) dist/*
+    displayName: 'Upload package to Test feed'
