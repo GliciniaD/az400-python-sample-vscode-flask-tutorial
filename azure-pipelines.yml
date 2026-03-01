@@ -4,12 +4,19 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+  feedName: 'Test-feed'
+  packageName: 'flask-app'
+  packageVersion: '1.0.$(Build.BuildID'
+
+
 strategy:
   matrix:
     Python310:
       python.version: '3.10'
 
 steps:
+#Use Python
   - task: UsePythonVersion@0
     inputs:
       versionSpec: '$(python.version)'
@@ -17,14 +24,15 @@ steps:
 
   - script: |
       python -m pip install --upgrade pip --upgrade build
-      python -m build
-    displayName: 'Build Package'
-
-  - task: 'TwineAuthenticate@1'
-    inputs:
-      artifactFeed: 'Test-feed'
+      python install -r requirements.txt
+    displayName: 'Install dependencies'
 
   - script: |
-      pythin -m pip install twine
-      twine upload -r Test-feed --config-file $(PYPIRC_PATH) dist/*
-    displayName: 'Upload package to Test feed'
+      echo "Pipeline workspace: $(Pipeline.Workspace)"
+      echo "Sources dir: $(Build.SourcesDirectory)"
+      echo "Artifact staging dir: $(Build.ArtifactStagingDirectory)"
+      echo "Contents of sources dir:"
+      ls -la $(Build.SourcesDirectory)
+      echo "Contents of artifact staging dir:"
+      ls -la $(Build.ArtifactStagingDirectory)
+    displayName: 'Debug paths'
