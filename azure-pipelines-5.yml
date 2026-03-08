@@ -6,22 +6,65 @@ pool:
   vmImage: ubuntu-latest
 
 
-#Create Infrustruture (dont forget to delete it afwards)
-Stage: Create Web app to Azure
--task: AzureCLI@2
-  inputs:
-  azureSubscription:
-  scriptType:
-  script
+stages:
+- stage: Create Web App
+  displayName: 'Create Web App on Azure'
+  jobs:
+  - job: CreateApp
+    displayName: 'Create app via CLI'
+    steps:
+    - task: AzureCLI@2
+      displayName: AzureCLI Deployment
+      inputs:
+      azureSubscription: # string. Alias: connectedServiceNameARM. Required. Azure Resource Manager connection. 
+      scriptType:'bash' 
+      scriptLocation: inlineScript
+      inlineScript: |
+      az webapp create \  --resource-group AZ400-play \   --plan ASP-AzureAppIncidentProjectgroup-8d3f \   --name myflaskwebapp123 \  --runtime "PYTHON:3.10"
+
+- stage: Build app
+  displayName: 'Build Python Stage'
+  dependsOn: Create Web App
+  isSkippable: false
+  jobs:
+  - job: Build App on Devops
+    displayName: 'Build App on Devops'
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '$(python.version)'
+    - script: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov
+      displayName: 'Install dependencies'
+
+- stage: Deploy app
+  displayName: 'Deploy App Stage'
+  dependsOn: Build app
+  isSkippable: false
+  jobs:
+  - job: Deploy to  Azure 
+    displayName: 'Deploy Build App to Azure'
+    steps:
+    - script: |
+        echo "Running unit tests..."
+      displayName: 'Run unit tests'
+    - task: AzureWebApp@1
+        inputs:
+      azureSubscription: # string. Required. Azure subscription. 
+      appType: # 'webApp' | 'webAppLinux'. Required. App type. 
+      appName: # string. Required. App name. 
+      package: '$(System.DefaultWorkingDirectory)/**/*.zip' # string. Required. Package or folder. Default: $(System.DefaultWorkingDirectory)/**/*.zip.
 
 
-#Build the app
-Stage: Build App 
-
-
-#Deploy it to app created in stage one
-Stage: Deploy app to web app I created above 
-
-
-Stage:
-Echo: "Delete it now"
+- stage: Reminder to delete
+  displayName: 'Reminder to delete'
+  dependsOn: Deploy App
+  isSkippable: false
+  jobs:
+  - job: Reminder
+    displayName: 'Text reminder '
+    steps:
+    - script: |
+      echo "Delete or at least stop"
