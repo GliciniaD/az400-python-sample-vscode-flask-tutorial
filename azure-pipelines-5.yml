@@ -67,6 +67,7 @@ stages:
         appType: webApp 
         appName: flaskappgmd28 
         package: '$(System.DefaultWorkingDirectory)'
+        startupCommand: 'gunicorn --bind 0.0.0.0:8000 app:app'
 
 # ===============================
 # Stage 4: Reminder
