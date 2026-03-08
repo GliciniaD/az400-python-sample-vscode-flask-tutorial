@@ -21,10 +21,10 @@ stages:
         scriptType: bash 
         scriptLocation: inlineScript
         inlineScript: |
-          az webapp create \  
-          --resource-group AZ400-play \   
-          --plan ASP-AzureAppIncidentProjectgroup-8d3f \   
-          --name flaskappgmd28 \  
+          az webapp create \
+          --resource-group AZ400-play \
+          --plan ASP-AzureAppIncidentProjectgroup-8d3f \
+          --name flaskappgmd28 \
           --runtime "PYTHON:3.10"
 
 - stage: BuildApp
