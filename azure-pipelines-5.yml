@@ -1,7 +1,11 @@
 # Pipeline I created to 1)create webapp into exisitng rg and plan
 
+---
 trigger:
-- main
+  branches:
+    include:
+      - main
+  batch: true
 
 pool:
   vmImage: ubuntu-latest
