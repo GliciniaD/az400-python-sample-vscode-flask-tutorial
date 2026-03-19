@@ -4,6 +4,7 @@
 # https://aka.ms/yaml
 
 #trigger removed to avoid it all running and taking up microsoft agents
+#trigger removed to avoid it all running and taking up microsoft agents
 
 pool:
   vmImage: ubuntu-latest
