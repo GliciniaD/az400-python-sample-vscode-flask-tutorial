@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: flaskapp
-        image: <YOUR_ACR_NAME>.azurecr.io/flaskapp:v1
+        image: myacr12345gd.azurecr.io/flaskapp:v1
         ports:
         - containerPort: 5000
 
