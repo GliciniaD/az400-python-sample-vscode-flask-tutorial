@@ -19,7 +19,7 @@ stages:
     steps:
     - task: AzureCLI@2
       inputs:
-        azureSubscription: 'YOUR-SERVICE-CONNECTION'
+        azureSubscription: 'SPN-Dev-01'
         scriptType: bash
         scriptLocation: inlineScript
         inlineScript: |
